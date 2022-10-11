@@ -1,0 +1,49 @@
+[
+	[
+		level: 0,
+		list: 
+				[
+					[
+						id: 0,
+						name: 'Transport',
+						icon: 'car.icon'
+					],
+					[
+						id: 1,
+						name: 'Food',
+						icon: 'apple.icon'
+					],
+				]
+	],
+	[
+		level: 1,
+		list: 
+				[
+					[
+						id: 0,
+						parent: 0,
+						name: 'Car',
+						icon: 'car.icon'
+					],
+					[
+						id: 0,
+						parent: 0,
+						name: 'Plane',
+						icon: 'plane.icon'
+					],
+					[
+						id: 1,
+						parent: 0,
+						name: 'Car',
+						icon: 'car.icon'
+					],
+					[
+						id: 0,
+						parent: 0,
+						name: 'Plane',
+						icon: 'plane.icon'
+					],
+				]
+	],
+
+]
