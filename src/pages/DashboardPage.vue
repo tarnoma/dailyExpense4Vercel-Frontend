@@ -85,12 +85,17 @@ import { useStoreUser } from "stores/user";
 export default defineComponent({
   name: "DashboardPage",
   components: { DashboardCardComponent },
+  setup() {
+    return {
+      database: useMockDatabase(),
+      userStore: useStoreUser(),
+    };
+  },
   data() {
     return {
       dateRange: null,
       dateShow: "Please select date",
-      database: useMockDatabase(),
-      userStore: useStoreUser(),
+
       allMyExpenese: null,
       expenese: {
         today: 0,
@@ -158,10 +163,28 @@ export default defineComponent({
       }
     },
     getExpenses() {
+      // this.$api
+      //   .get("/user/getrecords", {
+      //     headers: {
+      //       "access-token": this.userStore.accessToken,
+      //       "user-id": this.userStore.userid,
+      //     },
+      //   })
+      //   .then((res) => {
+      //     if (res.status == 200) {
+      //       this.allMyExpenese = res.data;
+      //
+      //     }
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //   });
+
       this.allMyExpenese = this.database.getMyExpeneses(
         this.userStore.userid,
         this.userStore.accessToken
       );
+      this.calculateExpenses();
     },
     calculateExpenses() {
       var d = new Date();
@@ -222,7 +245,6 @@ export default defineComponent({
   },
   created() {
     this.getExpenses();
-    this.calculateExpenses();
     if (!this.userStore.userid) this.$router.push("/login");
   },
 });

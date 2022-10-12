@@ -164,6 +164,37 @@ export default defineComponent({
       });
     },
     onSubmit() {
+      // let data = {
+      //   username: this.username,
+      //   password: this.password,
+      //   nickname: this.nickname,
+      //   avatar: this.imgAvatar,
+      //   email: this.email,
+      // };
+
+      // this.$api
+      //   .post("/register", data)
+      //   .then((res) => {
+      //     if (res.status == 200) {
+      //       this.userStore.userid = res.data.userid;
+      //       this.userStore.img = res.data.avatar;
+      //       this.userStore.accessToken = res.data.accessToken;
+      //       this.userStore.name = res.data.nickname;
+      //       this.userStore.username = this.username;
+      //       this.userStore.admin = res.data.admin;
+      //       this.$router.push("/");
+      //       Notify.create({
+      //         type: "positive",
+      //         message: "Successfully Registered!",
+      //       });
+      //     }
+      //   })
+      //   .catch((err) => {
+      //     Notify.create({
+      //       type: "negative",
+      //       message: "Can't register! There some error!",
+      //     });
+      //   });
       var res = this.database.registerUser(
         this.nickname,
         this.email,
@@ -218,6 +249,22 @@ export default defineComponent({
           this.usernameCaption.icon = "no_accounts";
           this.usernameCaption.msg = "Username is unavailable!";
         }
+        // this.$api
+        //   .get(`/checkuser/${this.username}`)
+        //   .then((res) => {
+        //     if (res.status == 200) {
+        //       this.usernameCaption.show = true;
+        //       this.usernameCaption.isValid = true;
+        //       this.usernameCaption.icon = "account_circle";
+        //       this.usernameCaption.msg = "Username is available!";
+        //     }
+        //   })
+        //   .catch((err) => {
+        //     this.usernameCaption.show = true;
+        //     this.usernameCaption.isValid = false;
+        //     this.usernameCaption.icon = "no_accounts";
+        //     this.usernameCaption.msg = "Username is unavailable!";
+        //   });
       } else {
         this.resetCaption();
       }
