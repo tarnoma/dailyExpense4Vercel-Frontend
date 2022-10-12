@@ -55,6 +55,10 @@
           </div>
         </q-form>
       </q-card-section>
+      <br />
+      <div class="text-caption full-width q-mt-sm" align="center">
+        No account? <a href="/register">Register here</a>
+      </div>
     </q-card>
   </q-page>
 </template>
@@ -89,38 +93,53 @@ export default defineComponent({
       this.isShowPass = true;
     },
     onSubmit() {
-      let data = {
-        username: this.username,
-        password: this.password,
-      };
-      this.$api
-        .post("/login", data)
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((err) => {
-          console.log(err);
+      // let data = {
+      //   username: this.username,
+      //   password: this.password,
+      // };
+      // this.$api
+      //   .post("/login", data)
+      //   .then((res) => {
+      //     if (res.status == 200) {
+      //       this.userStore.userid = res.data.userid;
+      //       this.userStore.img = res.data.img;
+      //       this.userStore.accessToken = res.data.accessToken;
+      //       this.userStore.name = res.data.nickname;
+      //       this.userStore.username = res.data.username;
+      //       this.userStore.admin = res.data.admin;
+      //       Notify.create({
+      //         type: "positive",
+      //         message: "Successfully Login!",
+      //       });
+      //       this.$router.push("/dashboard");
+      //     }
+      //   })
+      //   .catch((err) => {
+      //     Notify.create({
+      //       type: "negative",
+      //       message: "Error! account inactive or wrong information!",
+      //     });
+      //   });
+      var res = this.database.tryLogin(this.username, this.password);
+      if (res) {
+        this.userStore.userid = res.userid;
+        this.userStore.img = res.img;
+        this.userStore.accessToken = res.accessToken;
+        this.userStore.name = res.name;
+        this.userStore.username = res.username;
+        this.userStore.admin = res.admin;
+        Notify.create({
+          type: "positive",
+          message: "Successfully Login!",
         });
-      // var res = this.database.tryLogin(this.username, this.password);
-      // if (res) {
-      //   this.userStore.userid = res.userid;
-      //   this.userStore.img = res.img;
-      //   this.userStore.accessToken = res.accessToken;
-      //   this.userStore.name = res.name;
-      //   this.userStore.username = res.username;
-      //   this.userStore.admin = res.admin;
-      //   Notify.create({
-      //     type: "positive",
-      //     message: "Successfully Login!",
-      //   });
-      //   this.$router.push("/dashboard");
-      // } else {
-      //   Notify.create({
-      //     type: "negative",
-      //     message: "Wrong username or password!",
-      //   });
-      // }
-      // this.$refs.MyLoginForm.reset();
+        this.$router.push("/dashboard");
+      } else {
+        Notify.create({
+          type: "negative",
+          message: "Wrong username or password!",
+        });
+      }
+      this.$refs.MyLoginForm.reset();
     },
   },
   created() {
