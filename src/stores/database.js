@@ -159,6 +159,7 @@ export const useMockDatabase = defineStore("database", {
   },
   actions: {
     tryLogin(username, password) {
+      console.log({ username: username, password: password });
       var res = this.getUsers.find(
         (user) => user.username == username && user.active == true
       );
@@ -176,6 +177,7 @@ export const useMockDatabase = defineStore("database", {
       return null;
     },
     checkUsername(username) {
+      console.log({ username: username });
       var res = this.getUsers.find((user) => user.username == username);
       if (res == null) return true;
       else return false;
@@ -200,6 +202,7 @@ export const useMockDatabase = defineStore("database", {
       return null;
     },
     checkValidUser(userid, accessToken) {
+      console.log({ userid: userid, accessToken: accessToken });
       var a = this.getUsers.find(
         (user) => (user.id == userid) != null && user.accessToken == accessToken
       );
@@ -207,6 +210,7 @@ export const useMockDatabase = defineStore("database", {
       else return false;
     },
     checkAdminUser(userid, accessToken) {
+      console.log({ userid: userid, accessToken: accessToken });
       var a = this.getUsers.find(
         (user) =>
           (user.id == userid) != null &&
@@ -217,6 +221,7 @@ export const useMockDatabase = defineStore("database", {
       else return false;
     },
     getMyExpeneses(userid, accessToken) {
+      console.log({ userid: userid, accessToken: accessToken });
       if (this.checkValidUser(userid, accessToken)) {
         return this.getExpenses.filter((item) => item.userId == userid);
       } else {
@@ -224,6 +229,11 @@ export const useMockDatabase = defineStore("database", {
       }
     },
     getCategoryName(userid, accessToken, categoryId) {
+      console.log({
+        userid: userid,
+        accessToken: accessToken,
+        categoryId: categoryId,
+      });
       if (this.checkValidUser(userid, accessToken)) {
         var a = this.getCategory.find(
           (item) => item.id == categoryId && item.isVisible == true
@@ -235,6 +245,11 @@ export const useMockDatabase = defineStore("database", {
       }
     },
     getChildCategoryInfo(userid, accessToken, categoryId) {
+      console.log({
+        userid: userid,
+        accessToken: accessToken,
+        categoryId: categoryId,
+      });
       if (this.checkValidUser(userid, accessToken)) {
         var a = this.getCategory.filter(
           (item) => item.parent == categoryId && item.isVisible == true
@@ -246,6 +261,10 @@ export const useMockDatabase = defineStore("database", {
       }
     },
     getBaseCategory(userid, accessToken) {
+      console.log({
+        userid: userid,
+        accessToken: accessToken,
+      });
       if (this.checkValidUser(userid, accessToken)) {
         return this.getCategory.filter(
           (item) => item.parent == "" && item.isVisible == true
@@ -255,6 +274,12 @@ export const useMockDatabase = defineStore("database", {
       }
     },
     addExpense(userid, accessToken, categoryId, amountSpent) {
+      console.log({
+        userid: userid,
+        accessToken: accessToken,
+        categoryId: categoryId,
+        amountSpent: amountSpent,
+      });
       if (this.checkValidUser(userid, accessToken)) {
         var today = new Date();
         this.spentRecords.push({
@@ -268,11 +293,21 @@ export const useMockDatabase = defineStore("database", {
       }
     },
     adminGetUsers(userid, accessToken) {
+      console.log({
+        userid: userid,
+        accessToken: accessToken,
+      });
       if (this.checkAdminUser(userid, accessToken)) {
         return this.getUsers;
       }
     },
     adminSetStatus(userid, accessToken, targetId, status) {
+      console.log({
+        userid: userid,
+        accessToken: accessToken,
+        targetId: targetId,
+        status: status,
+      });
       if (this.checkAdminUser(userid, accessToken)) {
         this.getUsers.forEach((item, index) => {
           if (item.id == targetId) {
@@ -282,6 +317,11 @@ export const useMockDatabase = defineStore("database", {
       }
     },
     adminRemoveCategory(userid, accessToken, categoryId) {
+      console.log({
+        userid: userid,
+        accessToken: accessToken,
+        categoryId: categoryId,
+      });
       if (this.checkAdminUser(userid, accessToken)) {
         this.category = this.getCategory.filter(
           (item) => item.id != categoryId
@@ -295,6 +335,10 @@ export const useMockDatabase = defineStore("database", {
       }
     },
     adminGetBaseCategory(userid, accessToken) {
+      console.log({
+        userid: userid,
+        accessToken: accessToken,
+      });
       if (this.checkAdminUser(userid, accessToken)) {
         return this.getCategory.filter((item) => item.parent == "");
       } else {
@@ -302,6 +346,11 @@ export const useMockDatabase = defineStore("database", {
       }
     },
     adminGetChildCategoryInfo(userid, accessToken, categoryId) {
+      console.log({
+        userid: userid,
+        accessToken: accessToken,
+        categoryId: categoryId,
+      });
       if (this.checkAdminUser(userid, accessToken)) {
         var a = this.getCategory.filter((item) => item.parent == categoryId);
         if (a != null) return a;
@@ -311,6 +360,11 @@ export const useMockDatabase = defineStore("database", {
       }
     },
     adminUpdateCategory(userid, accessToken, info) {
+      console.log({
+        userid: userid,
+        accessToken: accessToken,
+        categoryId: categoryId,
+      });
       if (this.checkAdminUser(userid, accessToken)) {
         this.getCategory.forEach((item, index) => {
           if (item.id == info.id) {
@@ -323,6 +377,12 @@ export const useMockDatabase = defineStore("database", {
       }
     },
     adminAddCategory(userid, accessToken, info, parent) {
+      console.log({
+        userid: userid,
+        accessToken: accessToken,
+        info: info,
+        parent: parent,
+      });
       if (this.checkAdminUser(userid, accessToken)) {
         this.category.push({
           id: this.getCounterCategory + 1,
