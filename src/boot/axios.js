@@ -8,7 +8,7 @@ import axios from "axios";
 // "export default () => {}" function below (which runs individually
 // for each client)
 //const URL = "https://dailybackend-production.up.railway.app/";
-const URL = "http://localhost:5000";
+const URL = "http://localhost:3000";
 const api = axios.create({
   baseURL: URL,
   headers: { "Content-type": "application/json" },

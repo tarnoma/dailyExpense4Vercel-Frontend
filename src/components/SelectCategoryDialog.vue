@@ -38,17 +38,25 @@ export default defineComponent({
   },
   methods: {
     getBaseCat() {
-      this.baseCategoryInfo = this.database.getBaseCategory(
-        this.userStore.userid,
-        this.userStore.accessToken
-      );
+      const headers = {
+        "access-token": this.userStore.accessToken,
+      };
+      this.$api
+        .get("/category", { headers })
+        .then((res) => {
+          this.baseCategoryInfo = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.showErrDialog(err);
+        });
     },
     selectCategory(id, name, icon, src) {
       this.$emit("select", id, name, icon, src);
     },
   },
-  created() {
-    this.getBaseCat();
+  async created() {
+    await this.getBaseCat();
   },
   components: { DropDownListComponent },
 });

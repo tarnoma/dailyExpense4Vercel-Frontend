@@ -45,20 +45,37 @@ export default defineComponent({
   components: { ManageDropDownComponent, AddCategoryDialog },
   methods: {
     getBaseCat() {
-      this.baseCategoryInfo = this.database.adminGetBaseCategory(
-        this.userStore.userid,
-        this.userStore.accessToken
-      );
+      const headers = {
+        "access-token": this.userStore.accessToken,
+      };
+      this.$api
+        .get(`/category/admin`, { headers })
+        .then((res) => {
+          if (res.data != null) {
+            this.baseCategoryInfo = res.data;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     addCategory(info) {
-      this.database.adminAddCategory(
-        this.userStore.userid,
-        this.userStore.accessToken,
-        info,
-        ""
-      );
-      this.getBaseCat();
-      this.showAddCategory = false;
+      let new_data = {
+        parent: "",
+        ...info,
+      };
+      const headers = {
+        "access-token": this.userStore.accessToken,
+      };
+      this.$api
+        .post(`/category/admin/add`, new_data, { headers })
+        .then((res) => {
+          this.showAddCategory = false;
+          this.getBaseCat();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
   created() {

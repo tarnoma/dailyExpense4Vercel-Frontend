@@ -18,7 +18,10 @@
       <q-tr :props="props">
         <q-td key="avatar" :props="props">
           <q-avatar size="3rem">
-            <q-img v-if="props.row.avatar" :src="props.row.avatar" />
+            <q-img
+              v-if="props.row.avatar"
+              :src="`${this.$URL}/file/${props.row.avatar}`"
+            />
             <q-icon name="account_circle" v-else size="3rem" />
           </q-avatar>
         </q-td>
@@ -86,10 +89,20 @@ export default defineComponent({
   },
   methods: {
     getUsers() {
-      this.allUserInfo = this.database.adminGetUsers(
-        this.userStore.userid,
-        this.userStore.accessToken
-      );
+      const headers = {
+        "access-token": this.userStore.accessToken,
+      };
+      this.$api
+        .get(`/user/admin`, { headers })
+        .then((res) => {
+          if (res.data != null) {
+            this.allUserInfo = res.data;
+            this.parseUsersToRow();
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     parseUsersToRow() {
       for (const i in this.allUserInfo) {
@@ -100,22 +113,30 @@ export default defineComponent({
           name: user.name,
           email: user.email,
           username: user.username,
-          active: user.active,
+          active: user.active ? true : false,
         });
       }
     },
     setUserStatus(id, stat) {
-      this.database.adminSetStatus(
-        this.userStore.userid,
-        this.userStore.accessToken,
-        id,
-        stat
-      );
+      const headers = {
+        "access-token": this.userStore.accessToken,
+      };
+      this.$api
+        .put(`/user/admin/${id}`, { active: stat }, { headers })
+        .then((res) => {
+          if (res.status == 401) {
+            this.userStore.reset();
+            this.$router.push("/login");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          this.showErrDialog(err);
+        });
     },
   },
-  created() {
-    this.getUsers();
-    this.parseUsersToRow();
+  async created() {
+    await this.getUsers();
   },
 });
 </script>

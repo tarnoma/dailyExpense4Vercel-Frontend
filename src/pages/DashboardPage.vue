@@ -163,28 +163,26 @@ export default defineComponent({
       }
     },
     getExpenses() {
-      // this.$api
-      //   .get("/user/getrecords", {
-      //     headers: {
-      //       "access-token": this.userStore.accessToken,
-      //       "user-id": this.userStore.userid,
-      //     },
-      //   })
-      //   .then((res) => {
-      //     if (res.status == 200) {
-      //       this.allMyExpenese = res.data;
-      //
-      //     }
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //   });
+      this.$api
+        .get("/record", {
+          headers: {
+            "access-token": this.userStore.accessToken,
+          },
+        })
+        .then((res) => {
+          if (res.status == 200) {
+            this.allMyExpenese = res.data;
+            this.calculateExpenses();
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
 
-      this.allMyExpenese = this.database.getMyExpeneses(
-        this.userStore.userid,
-        this.userStore.accessToken
-      );
-      this.calculateExpenses();
+      // this.allMyExpenese = this.database.getMyExpeneses(
+      //   this.userStore.userid,
+      //   this.userStore.accessToken
+      // );
     },
     calculateExpenses() {
       var d = new Date();

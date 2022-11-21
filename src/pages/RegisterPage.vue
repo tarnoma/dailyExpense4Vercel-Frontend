@@ -164,64 +164,58 @@ export default defineComponent({
       });
     },
     onSubmit() {
-      // let data = {
-      //   username: this.username,
-      //   password: this.password,
-      //   nickname: this.nickname,
-      //   avatar: this.imgAvatar,
-      //   email: this.email,
-      // };
-
-      // this.$api
-      //   .post("/register", data)
-      //   .then((res) => {
-      //     if (res.status == 200) {
-      //       this.userStore.userid = res.data.userid;
-      //       this.userStore.img = res.data.avatar;
-      //       this.userStore.accessToken = res.data.accessToken;
-      //       this.userStore.name = res.data.nickname;
-      //       this.userStore.username = this.username;
-      //       this.userStore.admin = res.data.admin;
-      //       this.$router.push("/");
-      //       Notify.create({
-      //         type: "positive",
-      //         message: "Successfully Registered!",
-      //       });
-      //     }
-      //   })
-      //   .catch((err) => {
-      //     Notify.create({
-      //       type: "negative",
-      //       message: "Can't register! There some error!",
-      //     });
-      //   });
-      var res = this.database.registerUser(
-        this.nickname,
-        this.email,
-        this.username,
-        this.password,
-        this.imgAvatar
-      );
-
-      if (res) {
-        this.userStore.userid = res.userid;
-        this.userStore.img = res.img;
-        this.userStore.accessToken = res.accessToken;
-        this.userStore.name = res.name;
-        this.userStore.username = res.username;
-        this.userStore.admin = res.admin;
-        this.$router.push("/");
-        Notify.create({
-          type: "positive",
-          message: "Successfully Registered!",
-        });
+      if (this.upload_avatar) {
+        const formData = new FormData();
+        formData.append("singlefile", this.upload_avatar);
+        this.$api
+          .post("/file/upload", formData)
+          .then((response) => {
+            if (response.status == 200) {
+              this.subSubmit(response.data.uploadFileName);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       } else {
-        Notify.create({
-          type: "negative",
-          message: "Can't register! There some error!",
-        });
+        this.subSubmit("");
       }
-
+    },
+    subSubmit(filename) {
+      let data = {
+        username: this.username,
+        password: this.password,
+        name: this.nickname,
+        img: filename,
+        email: this.email,
+      };
+      this.$api
+        .post("/user/signup", data)
+        .then((res) => {
+          if (res.status == 200) {
+            this.userStore.userid = res.data.id;
+            this.userStore.accessToken = res.data.accessToken;
+            this.userStore.name = res.data.name;
+            this.userStore.username = res.data.username;
+            this.userStore.admin = res.data.admin ? true : false;
+            if (res.data.img) {
+              this.userStore.img = this.$URL + "/file/" + res.data.img;
+            } else {
+              this.userStore.img = "default-avatar.png";
+            }
+            this.$router.push("/");
+            Notify.create({
+              type: "positive",
+              message: "Successfully Registered!",
+            });
+          }
+        })
+        .catch((err) => {
+          Notify.create({
+            type: "negative",
+            message: "Can't register! There some error!",
+          });
+        });
       this.$refs.MyRegisterForm.reset();
     },
     uploadPic() {
@@ -238,33 +232,33 @@ export default defineComponent({
   watch: {
     username() {
       if (this.username) {
-        if (this.database.checkUsername(this.username)) {
-          this.usernameCaption.show = true;
-          this.usernameCaption.isValid = true;
-          this.usernameCaption.icon = "account_circle";
-          this.usernameCaption.msg = "Username is available!";
-        } else {
-          this.usernameCaption.show = true;
-          this.usernameCaption.isValid = false;
-          this.usernameCaption.icon = "no_accounts";
-          this.usernameCaption.msg = "Username is unavailable!";
-        }
-        // this.$api
-        //   .get(`/checkuser/${this.username}`)
-        //   .then((res) => {
-        //     if (res.status == 200) {
-        //       this.usernameCaption.show = true;
-        //       this.usernameCaption.isValid = true;
-        //       this.usernameCaption.icon = "account_circle";
-        //       this.usernameCaption.msg = "Username is available!";
-        //     }
-        //   })
-        //   .catch((err) => {
-        //     this.usernameCaption.show = true;
-        //     this.usernameCaption.isValid = false;
-        //     this.usernameCaption.icon = "no_accounts";
-        //     this.usernameCaption.msg = "Username is unavailable!";
-        //   });
+        // if (this.database.checkUsername(this.username)) {
+        //   this.usernameCaption.show = true;
+        //   this.usernameCaption.isValid = true;
+        //   this.usernameCaption.icon = "account_circle";
+        //   this.usernameCaption.msg = "Username is available!";
+        // } else {
+        //   this.usernameCaption.show = true;
+        //   this.usernameCaption.isValid = false;
+        //   this.usernameCaption.icon = "no_accounts";
+        //   this.usernameCaption.msg = "Username is unavailable!";
+        // }
+        this.$api
+          .get(`/user/check/${this.username}`)
+          .then((res) => {
+            if (res.status == 200) {
+              this.usernameCaption.show = true;
+              this.usernameCaption.isValid = true;
+              this.usernameCaption.icon = "account_circle";
+              this.usernameCaption.msg = "Username is available!";
+            }
+          })
+          .catch((err) => {
+            this.usernameCaption.show = true;
+            this.usernameCaption.isValid = false;
+            this.usernameCaption.icon = "no_accounts";
+            this.usernameCaption.msg = "Username is unavailable!";
+          });
       } else {
         this.resetCaption();
       }

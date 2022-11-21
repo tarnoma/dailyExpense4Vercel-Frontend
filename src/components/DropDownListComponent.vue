@@ -62,29 +62,32 @@ export default defineComponent({
   },
   methods: {
     getChildCategoryInfo() {
-      var info = this.database.getChildCategoryInfo(
-        this.userStore.userid,
-        this.userStore.accessToken,
-        this.id
-      );
-
-      if (info != null) {
-        this.childInfo = info;
-        if (info.length == 0) {
-          this.isHideIcon = true;
-        } else {
-          this.isHideIcon = false;
-        }
-      } else {
-        console.log("Error in DropDownListComponent! invalid category id!");
-      }
+      const headers = {
+        "access-token": this.userStore.accessToken,
+      };
+      this.$api
+        .get(`/category/child/${this.id}`, { headers })
+        .then((res) => {
+          if (res.data != null) {
+            this.childInfo = res.data;
+            if (res.data.length == 0) {
+              this.isHideIcon = true;
+            } else {
+              this.isHideIcon = false;
+            }
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          this.showErrDialog(err);
+        });
     },
     callToRef(id, names, icon, src) {
       this.$emit("t", id, names, icon, src);
     },
   },
-  created() {
-    this.getChildCategoryInfo();
+  async created() {
+    await this.getChildCategoryInfo();
   },
 });
 </script>

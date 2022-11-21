@@ -106,57 +106,76 @@ export default defineComponent({
         id: this.id,
         name: this.name,
         src: this.src,
-        isVisible: this.isVisible,
+        isVisible: this.isVisible ? true : false,
         parent: this.parent,
-        icon: this.icon,
+        icon: this.icon ? true : false,
       },
       showAddCategory: false,
     };
   },
   methods: {
     getChildCategoryInfo() {
-      var info = this.database.adminGetChildCategoryInfo(
-        this.userStore.userid,
-        this.userStore.accessToken,
-        this.id
-      );
-      if (info != null) {
-        this.childInfo = info;
-        if (info.length == 0) {
-          this.isHideIcon = true;
-        } else {
-          this.isHideIcon = false;
-        }
-      } else {
-        console.log("Error in DropDownListComponent! invalid category id!");
-      }
+      const headers = {
+        "access-token": this.userStore.accessToken,
+      };
+      this.$api
+        .get(`/category/admin/child/${this.id}`, { headers })
+        .then((res) => {
+          this.childInfo = res.data;
+          if (res.data.length == 0) {
+            this.isHideIcon = true;
+          } else {
+            this.isHideIcon = false;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     removeCategory() {
-      this.database.adminRemoveCategory(
-        this.userStore.userid,
-        this.userStore.accessToken,
-        this.id
-      );
-      this.$emit("updateRemove");
+      const headers = {
+        "access-token": this.userStore.accessToken,
+      };
+      this.$api
+        .delete(`/category/admin/del/${this.id}`, { headers })
+        .then((res) => {
+          this.$emit("updateRemove");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     editConfirm(info) {
-      this.database.adminUpdateCategory(
-        this.userStore.userid,
-        this.userStore.accessToken,
-        info
-      );
-      this.editState = false;
-      this.$emit("updateRemove");
+      const headers = {
+        "access-token": this.userStore.accessToken,
+      };
+      this.$api
+        .put(`/category/admin/up/${this.id}`, info, { headers })
+        .then((res) => {
+          this.editState = false;
+          this.$emit("updateRemove");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     addCategory(info) {
-      this.database.adminAddCategory(
-        this.userStore.userid,
-        this.userStore.accessToken,
-        info,
-        this.id
-      );
-      this.showAddCategory = false;
-      this.getChildCategoryInfo();
+      let data = {
+        parent: this.id,
+        ...info,
+      };
+      const headers = {
+        "access-token": this.userStore.accessToken,
+      };
+      this.$api
+        .post(`/category/admin/add`, data, { headers })
+        .then((res) => {
+          this.showAddCategory = false;
+          this.getChildCategoryInfo();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
   created() {

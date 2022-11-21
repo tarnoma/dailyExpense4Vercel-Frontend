@@ -99,12 +99,30 @@ export default defineComponent({
     },
     confirmAdd() {
       if (this.moneySpent.trim() != "" && this.displayCategory.trim() != "") {
-        this.database.addExpense(
-          this.userStore.userid,
-          this.userStore.accessToken,
-          this.selectedCategory.id,
-          this.moneySpent
-        );
+        // this.database.addExpense(
+        //   this.userStore.userid,
+        //   this.userStore.accessToken,
+        //   this.selectedCategory.id,
+        //   this.moneySpent
+        // );
+        let data = {
+          category_id: this.selectedCategory.id,
+          spent: this.moneySpent,
+        };
+        const headers = {
+          "access-token": this.userStore.accessToken,
+        };
+        this.$api
+          .post("/record", data, { headers })
+          .then((res) => {
+            if (res.status == 401) {
+              this.userStore.reset();
+              this.$router.push("/login");
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       }
     },
   },
