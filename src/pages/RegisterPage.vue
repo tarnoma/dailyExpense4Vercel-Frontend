@@ -246,19 +246,19 @@ export default defineComponent({
         this.$api
           .get(`/user/check/${this.username}`)
           .then((res) => {
-            if (res.status == 200) {
+            if (res.data.valid) {
               this.usernameCaption.show = true;
               this.usernameCaption.isValid = true;
               this.usernameCaption.icon = "account_circle";
               this.usernameCaption.msg = "Username is available!";
+            } else {
+              this.usernameCaption.show = true;
+              this.usernameCaption.isValid = false;
+              this.usernameCaption.icon = "no_accounts";
+              this.usernameCaption.msg = "Username is unavailable!";
             }
           })
-          .catch((err) => {
-            this.usernameCaption.show = true;
-            this.usernameCaption.isValid = false;
-            this.usernameCaption.icon = "no_accounts";
-            this.usernameCaption.msg = "Username is unavailable!";
-          });
+          .catch((err) => {});
       } else {
         this.resetCaption();
       }

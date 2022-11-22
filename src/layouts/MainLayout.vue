@@ -77,6 +77,13 @@
               <q-item-section> Dashboard </q-item-section>
             </q-item>
 
+            <q-item clickable v-ripple href="/list">
+              <q-item-section avatar>
+                <q-icon name="list" />
+              </q-item-section>
+
+              <q-item-section> List My Expenses </q-item-section>
+            </q-item>
             <q-item clickable v-ripple href="/expenses">
               <q-item-section avatar>
                 <q-icon name="dashboard_customize" />

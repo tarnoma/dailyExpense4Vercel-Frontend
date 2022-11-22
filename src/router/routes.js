@@ -15,6 +15,10 @@ const routes = [
         path: "/management",
         component: () => import("pages/ManagementPage.vue"),
       },
+      {
+        path: "/list",
+        component: () => import("pages/ListExpensesPage.vue"),
+      },
     ],
   },
 

@@ -106,7 +106,7 @@ export default defineComponent({
     },
     parseUsersToRow() {
       for (const i in this.allUserInfo) {
-        var user = this.allUserInfo[i];
+        let user = this.allUserInfo[i];
         this.rows.push({
           avatar: user.img,
           id: user.id,
