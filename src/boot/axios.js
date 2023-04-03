@@ -7,8 +7,8 @@ import axios from "axios";
 // good idea to move this instance creation inside of the
 // "export default () => {}" function below (which runs individually
 // for each client)
-const URL = "https://betterendbackforproject-production.up.railway.app";
-//const URL = "http://localhost:3000";
+const URL = "https://better-endback-for-project.vercel.app/";
+// const URL = "http://localhost:3000";
 const api = axios.create({
   baseURL: URL,
   headers: { "Content-type": "application/json" },
